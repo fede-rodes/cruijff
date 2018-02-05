@@ -49,7 +49,7 @@
     "react-native-config": "^0.10.0",
     "react-native-device-info": "0.11.0",
     "react-native-fbsdk": "^0.7.0",
-    "react-native-i18n": "1.0.0",
+    "react-native-i18n": "2.0.12",
     "react-native-svg": "5.5.1",
     "react-native-vector-icons": "4.3.0",
     "react-navigation": "1.0.0-beta.11",

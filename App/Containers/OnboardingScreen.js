@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Image } from 'react-native'
-import Onboarding from '../Components/Onboarding'
+import Onboarding from '../Components/ScreenSlider'
 import Images from '../Themes/Images'
 import Colors from '../Themes/Colors'
 

@@ -1,18 +1,16 @@
-import { FlatList, View, Text } from 'react-native'
+import { View, Text } from 'react-native'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Footer from './Footer'
+import Swiper from 'react-native-swiper'
 
-// hotfix: https://github.com/facebook/react-native/issues/16710
-const itemVisibleHotfix = { itemVisiblePercentThreshold: 100 }
-
+/* ScreenSlider is using the same interface as FlatList (data, renderItem, keyExtractor) */
 class ScreenSlider extends Component {
   static propTypes = {
     renderItem: PropTypes.func,
     keyExtractor: PropTypes.func,
     data: PropTypes.array,
     showNext: PropTypes.bool,
-    showDone: PropTypes.bool,
     onDone: PropTypes.func
   }
 
@@ -20,9 +18,7 @@ class ScreenSlider extends Component {
     renderItem: item => <Text>{JSON.stringify(item)}</Text>,
     keyExtractor: (item, index) => index,
     data: ['No data'],
-    alterBottomColor: true,
-    showNext: true,
-    showDone: true
+    showNext: true
   }
 
   constructor () {
@@ -33,49 +29,47 @@ class ScreenSlider extends Component {
     }
   }
 
-  onSwipePageChange = ({ viewableItems }) => {
-    if (viewableItems[0]) {
-      this.setState({ currentPage: viewableItems[0].index })
-    }
+  onIndexChanged = index => {
+    this.setState({ currentPage: index })
   }
 
   goNext = () => {
-    this.flatList.scrollToIndex({
-      animated: true,
-      index: this.state.currentPage + 1
-    })
+    if (this.state.currentPage + 1 < this.props.data.length) {
+      this.swiper.scrollBy(1)
+    } else {
+      this.props.onDone && this.props.onDone()
+    }
   }
 
-  keyExtractor = (item, index) => index
-
   render () {
-    const { data, showNext, showDone } = this.props
+    const swiperScreens = this.props.data.map((item, index) => (
+      <View style={{ flex: 1 }} key={this.props.keyExtractor(item, index)}>
+        {this.props.renderItem({ item })}
+      </View>
+    ))
 
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center'
-        }}
-      >
-        <FlatList
-          data={this.props.data}
-          renderItem={this.props.renderItem}
-          keyExtractor={this.props.keyExtractor}
-          ref={list => {
-            this.flatList = list
+      <View style={{ flex: 1 }}>
+        <Swiper
+          loop={false}
+          showsPagination={false}
+          ref={ref => {
+            this.swiper = ref
           }}
-          pagingEnabled
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          onViewableItemsChanged={this.onSwipePageChange}
-          viewabilityConfig={itemVisibleHotfix}
-          initialNumToRender={1}
-        />
+          onIndexChanged={this.onIndexChanged}
+        >
+          {swiperScreens}
+        </Swiper>
         <Footer
-          showNext={showNext}
-          showDone={showDone}
-          numPages={data.length}
+          showNext={this.props.showNext}
+          numPages={this.props.data.length}
+          buttonText={
+            this.props.footerText &&
+            this.props.footerText(
+              this.props.data[this.state.currentPage],
+              this.state.currentPage
+            )
+          }
           currentPage={this.state.currentPage}
           onNext={this.goNext}
         />

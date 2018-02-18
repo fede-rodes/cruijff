@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import Colors from '../../../Themes/Colors'
 import Fonts from '../../../Themes/Fonts'
 
-export const style = StyleSheet.create({
+export const footerStyle = StyleSheet.create({
   container: {
     height: 50,
     flexDirection: 'column',
@@ -26,5 +26,24 @@ export const navDotsTheme = StyleSheet.create({
   },
   active: {
     backgroundColor: Colors.actionYellow
+  }
+})
+
+export const buttonStyle = StyleSheet.create({
+  textContainer: {
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  text: {
+    textAlignVertical: 'center',
+    lineHeight: 24,
+    alignItems: 'baseline',
+    color: Colors.white,
+    textAlign: 'center'
+  },
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

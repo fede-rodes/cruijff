@@ -1,31 +1,30 @@
 import React from 'react'
-import I18n from '../I18n'
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-  StyleSheet
-} from 'react-native'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
-import { navbarStyle } from './Styles/NavBar'
 import Text from './Text'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Colors from '../Themes/Colors'
 
 export default class NavBarButton extends React.Component {
   static propTypes = {
-    buttonText: PropTypes.string,
+    buttonText: PropTypes.string.isRequired,
+    icon: PropTypes.shape({
+      set: PropTypes.any,
+      name: PropTypes.string
+    }),
     onPress: PropTypes.func,
     main: PropTypes.bool
   }
 
-  static defaultProps = {}
+  static defaultProps = {
+    main: false
+  }
 
   onPress = () => {
     this.props.onPress && this.props.onPress()
   }
 
   render () {
+    const Icon = this.props.icon.set
     return (
       <TouchableOpacity style={{ flex: 1 }} onPress={this.onPress}>
         <View
@@ -34,8 +33,16 @@ export default class NavBarButton extends React.Component {
             this.props.main && navbarButtonStyle.mainButton
           ]}
         >
-          <Icon name='chevron-right' size={25} color='black' />
-          <Text>bla</Text>
+          <Icon
+            name={this.props.icon.name}
+            size={25}
+            color={this.props.main ? Colors.white : Colors.black54}
+          />
+          <Text
+            style={{ color: this.props.main ? Colors.white : Colors.black54 }}
+          >
+            {this.props.buttonText}
+          </Text>
         </View>
       </TouchableOpacity>
     )
@@ -51,6 +58,8 @@ const navbarButtonStyle = StyleSheet.create({
     justifyContent: 'center'
   },
   mainButton: {
-    backgroundColor: Colors.primaryGreen
+    backgroundColor: Colors.primaryGreen,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8
   }
 })

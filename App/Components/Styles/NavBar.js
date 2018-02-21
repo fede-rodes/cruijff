@@ -6,6 +6,7 @@ export const navbarStyle = StyleSheet.create({
   container: {
     height: 70,
     marginTop: -20,
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-end',
     backgroundColor: Colors.transparent

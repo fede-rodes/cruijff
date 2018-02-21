@@ -25,6 +25,9 @@ export default class NavBarButton extends React.Component {
 
   render () {
     const Icon = this.props.icon.set
+    const color = this.props.main
+      ? Colors.white
+      : this.props.active ? Colors.primaryGreen : Colors.black54
     return (
       <TouchableOpacity style={{ flex: 1 }} onPress={this.onPress}>
         <View
@@ -33,16 +36,8 @@ export default class NavBarButton extends React.Component {
             this.props.main && navbarButtonStyle.mainButton
           ]}
         >
-          <Icon
-            name={this.props.icon.name}
-            size={25}
-            color={this.props.main ? Colors.white : Colors.black54}
-          />
-          <Text
-            style={{ color: this.props.main ? Colors.white : Colors.black54 }}
-          >
-            {this.props.buttonText}
-          </Text>
+          <Icon name={this.props.icon.name} size={25} color={color} />
+          <Text style={{ color: color }}>{this.props.buttonText}</Text>
         </View>
       </TouchableOpacity>
     )

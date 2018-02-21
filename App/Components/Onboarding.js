@@ -1,6 +1,6 @@
 import React from 'react'
 import ScreenSlider from './ScreenSlider/index'
-import OnboardingScreen from './OnBoardingScreen'
+import OnboardingScreen from './OnboardingScreen'
 import I18n from '../I18n'
 import Images from '../Themes/Images'
 
@@ -24,12 +24,14 @@ const data = [
 
 export default class extends React.Component {
   render () {
+    const { navigate } = this.props.navigation
     return (
       <ScreenSlider
         data={data}
         style={{ flex: 1 }}
         renderItem={({ item }) => <OnboardingScreen {...item} />}
         footerText={(item, index) => I18n.t(index < 2 ? 'continue' : 'lets go')}
+        onDone={() => navigate('LocationPermissionScreen')}
       />
     )
   }

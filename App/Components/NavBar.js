@@ -8,32 +8,54 @@ import NavBarButton from './NavBarButton'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MaterialCummunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-const icons = {
-  find: {
-    set: MaterialIcon,
-    name: 'search'
+const buttons = [
+  {
+    buttonText: 'find',
+    navigate: 'SpotSearchTab',
+    icon: {
+      set: MaterialIcon,
+      name: 'search'
+    }
   },
-  join: {
-    set: MaterialIcon,
-    name: 'person-add'
+  {
+    buttonText: 'join',
+    navigate: 'GameJoinTab',
+    icon: {
+      set: MaterialIcon,
+      name: 'person-add'
+    }
   },
-  plan: {
-    set: MaterialCummunityIcon,
-    name: 'soccer'
+  {
+    buttonText: 'plan-a-game',
+    navigate: 'GamePlanTab',
+    icon: {
+      set: MaterialCummunityIcon,
+      name: 'soccer'
+    },
+    main: true
   },
-  profile: {
-    set: MaterialIcon,
-    name: 'account-circle'
+  {
+    buttonText: 'profile',
+    navigate: 'ProfileTab',
+    icon: {
+      set: MaterialIcon,
+      name: 'account-circle'
+    }
   },
-  settings: {
-    set: MaterialIcon,
-    name: 'settings'
+  {
+    buttonText: 'settings',
+    navigate: 'SettingsTab',
+    icon: {
+      set: MaterialIcon,
+      name: 'settings'
+    }
   }
-}
+]
 
 export default class NavBar extends React.Component {
   static propTypes = {
-    buttonText: PropTypes.string
+    buttonText: PropTypes.string,
+    navigation: PropTypes.any // react-navigation object
   }
 
   static defaultProps = {}
@@ -41,25 +63,26 @@ export default class NavBar extends React.Component {
   render () {
     return (
       <View style={navbarStyle.container}>
-        <View style={navbarStyle.buttonContainer}>
-          <NavBarButton icon={icons.find} buttonText={I18n.t('find')} />
-        </View>
-        <View style={navbarStyle.buttonContainer}>
-          <NavBarButton icon={icons.join} buttonText={I18n.t('join')} />
-        </View>
-        <View style={navbarStyle.mainButtonContainer}>
-          <NavBarButton
-            main
-            icon={icons.plan}
-            buttonText={I18n.t('plan-a-game')}
-          />
-        </View>
-        <View style={navbarStyle.buttonContainer}>
-          <NavBarButton icon={icons.profile} buttonText={I18n.t('profile')} />
-        </View>
-        <View style={navbarStyle.buttonContainer}>
-          <NavBarButton icon={icons.settings} buttonText={I18n.t('settings')} />
-        </View>
+        {buttons.map((button, index) => (
+          <View
+            style={
+              button.main
+                ? navbarStyle.mainButtonContainer
+                : navbarStyle.buttonContainer
+            }
+          >
+            <NavBarButton
+              onPress={() => this.props.navigation.navigate(button.navigate)}
+              icon={button.icon}
+              buttonText={I18n.t(button.buttonText)}
+              active={
+                this.props.navigation &&
+                this.props.navigation.state.index === index
+              }
+              main={!!button.main}
+            />
+          </View>
+        ))}
       </View>
     )
   }

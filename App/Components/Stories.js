@@ -11,10 +11,10 @@ import './ScreenSlider/Stories.js'
 import './Rating.story'
 import './Cards/Cards.story'
 
-import OnBoarding from './OnBoarding'
+import Onboarding from './Onboarding'
 import ImageSwiper from './ImageSwiper'
 
-storiesOf('OnBoarding').add('Default', () => <OnBoarding />)
+storiesOf('Onboarding').add('Default', () => <Onboarding />)
 
 storiesOf('ImageSwiper').add('Default', () => (
   <ImageSwiper

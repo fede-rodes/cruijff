@@ -1,60 +1,52 @@
 import React from 'react'
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Image, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 import Text from './Text'
 import I18n from '../I18n'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import Colors from '../Themes/Colors'
 import Slider from './Slider'
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuProvider,
+  MenuTrigger
+} from 'react-native-popup-menu'
+import { TabBarTop, TabNavigator } from 'react-navigation'
+import Colors from '../Themes/Colors'
 
-const BasicButton = props => {
-  const { text, ...otherProps } = props
-  return (
-    <TouchableOpacity {...otherProps}>
-      <View style={basicButtonStyle.button}>
-        <Text>{text}</Text>
-      </View>
-    </TouchableOpacity>
-  )
-}
-
-const basicButtonStyle = StyleSheet.create({
-  button: {
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: Colors.black,
-    paddingHorizontal: 16,
-    paddingVertical: 4
-  }
-})
-
-class EditMenu extends React.PureComponent {
-  static propTypes = {
-    style: PropTypes.any
-  }
-
-  constructor () {
-    super()
-    this.state = { expanded: false }
-  }
-
-  toggle = () => this.setState({ expanded: !this.state.expanded })
-
-  render () {
-    const { text, ...props } = this.props
-    if (this.state.expanded) {
-      return <BasicButton text={text} {...props} />
+export const BottomNav = TabNavigator(
+  {
+    spots: {
+      screen: () => <Text>spots</Text>
+    },
+    games: {
+      screen: () => <Text>games</Text>
     }
-    return (
-      <TouchableOpacity {...props} onPress={this.toggle}>
-        <Icon size={24} name='more-vert' />
-      </TouchableOpacity>
-    )
+  },
+  {
+    tabBarComponent: TabBarTop,
+    tabBarPosition: 'top',
+    tabBarOptions: {
+      style: {
+        backgroundColor: Colors.white
+      },
+      labelStyle: {
+        color: 'black'
+      },
+      indicatorStyle: {
+        backgroundColor: Colors.primaryGreen,
+        height: 4
+      }
+    },
+    initialRouteName: 'spots'
   }
-}
+)
 
 export default class ProfileDetailsScreen extends React.PureComponent {
   static propTypes = {
+    navigation: PropTypes.any,
+    logout: PropTypes.func,
     facebook: PropTypes.shape({
       status: PropTypes.string,
       data: PropTypes.shape({
@@ -68,19 +60,56 @@ export default class ProfileDetailsScreen extends React.PureComponent {
     })
   }
 
+  componentWillMount () {
+    if (this.props.facebook.status !== 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+  }
+  componentWillReceiveProps () {
+    if (this.props.facebook.status === 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+  }
+
   render () {
-    if (this.props.facebook.status === 'SUCCESS') {
-      const imageUrl = `https://graph.facebook.com/${
-        this.props.facebook.data.token.userID
-      }/picture?type=large`
-      return (
+    if (
+      this.props.facebook.status !== 'SUCCESS' ||
+      !this.props.facebook.data.token ||
+      !this.props.facebook.data.profile
+    ) {
+      return null
+    }
+
+    const EditMenu = (
+      <View style={styles.editMenu}>
+        <Menu name='popup'>
+          <MenuTrigger menuName='popup'>
+            <Icon size={24} name='more-vert' />
+          </MenuTrigger>
+          <MenuOptions>
+            <MenuOption
+              onSelect={() =>
+                this.props.navigation.navigate('ProfileEditScreen')
+              }
+            >
+              <Text.M>{I18n.t('Edit')}</Text.M>
+            </MenuOption>
+            <MenuOption disabled />
+            <MenuOption onSelect={() => this.props.logout()}>
+              <Text.M style={{ color: 'red' }}>Log out</Text.M>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </View>
+    )
+
+    const imageUrl = `https://graph.facebook.com/${
+      this.props.facebook.data.token.userID
+    }/picture?type=large`
+    return (
+      <MenuProvider>
         <View style={styles.outerContainer}>
-          <EditMenu style={styles.editMenu} text={I18n.t('Edit profile')} />
+          {EditMenu}
           <View style={styles.center}>
             <Image style={styles.image} source={{ uri: imageUrl }} />
             <Text.L>{this.props.facebook.data.profile.name}</Text.L>
           </View>
-
           <View style={styles.ageTypeContainer}>
             <View style={styles.ageContainer}>
               <Text>{I18n.t('Age')}</Text>
@@ -88,20 +117,14 @@ export default class ProfileDetailsScreen extends React.PureComponent {
             </View>
             <View style={styles.type}>
               <Text>{I18n.t('Style')}</Text>
-              <Slider minValue={0} maxValue={100} />
+              <Slider disabled value={0.5} onChange={console.log} />
             </View>
           </View>
-          <View>
-            <Text>{JSON.stringify(this.props.facebook)}</Text>
+          <View style={styles.bottomNavContainer}>
+            <BottomNav style={{ flex: 1 }} />
           </View>
         </View>
-      )
-    }
-    return (
-      <View>
-        <Text>ProfileDetailsScreen</Text>
-        <Text>{JSON.stringify(this.props.facebook)}</Text>
-      </View>
+      </MenuProvider>
     )
   }
 }
@@ -116,7 +139,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   outerContainer: {
-    flex: 1
+    flex: 1,
+    paddingTop: 16,
+    backgroundColor: Colors.white
   },
   ageTypeContainer: {
     flexDirection: 'row',
@@ -130,6 +155,13 @@ const styles = StyleSheet.create({
   },
   editMenu: {
     position: 'absolute',
-    right: 8
+    right: 8,
+    top: 8
+  },
+  bottomNavContainer: {
+    flex: 1,
+    borderTopWidth: 1,
+    borderTopColor: Colors.black,
+    backgroundColor: '#ddd'
   }
 })

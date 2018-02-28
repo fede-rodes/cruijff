@@ -31,10 +31,14 @@ export default class ProfileDetailsScreen extends React.PureComponent {
   }
 
   componentWillMount () {
-    if (this.props.facebook.status !== 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+    if (this.props.facebook.status !== 'SUCCESS') {
+      this.props.navigation.navigate('ProfileLoginScreen')
+    }
   }
   componentWillReceiveProps () {
-    if (this.props.facebook.status === 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+    if (this.props.facebook.status === 'SUCCESS') {
+      this.props.navigation.navigate('ProfileLoginScreen')
+    }
   }
 
   render () {
@@ -62,7 +66,7 @@ export default class ProfileDetailsScreen extends React.PureComponent {
             </View>
             <View style={styles.fieldSet}>
               <Text>{I18n.t('Age')}</Text>
-              <TextInput defaultValue='30' />
+              <TextInput keyboardType='numeric' defaultValue='30' />
             </View>
             <View style={styles.fieldSet}>
               <Text>{I18n.t('Style')}</Text>

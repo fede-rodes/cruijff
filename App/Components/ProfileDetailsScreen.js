@@ -61,10 +61,14 @@ export default class ProfileDetailsScreen extends React.PureComponent {
   }
 
   componentWillMount () {
-    if (this.props.facebook.status !== 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+    if (this.props.facebook.status !== 'SUCCESS') {
+      this.props.navigation.navigate('ProfileLoginScreen')
+    }
   }
   componentWillReceiveProps () {
-    if (this.props.facebook.status === 'SUCCESS') { this.props.navigation.navigate('ProfileLoginScreen') }
+    if (this.props.facebook.status === 'SUCCESS') {
+      this.props.navigation.navigate('ProfileLoginScreen')
+    }
   }
 
   render () {
@@ -160,8 +164,8 @@ const styles = StyleSheet.create({
   },
   bottomNavContainer: {
     flex: 1,
-    borderTopWidth: 1,
-    borderTopColor: Colors.black,
-    backgroundColor: '#ddd'
+    borderTopWidth: 2,
+    borderTopColor: Colors.bgGrey,
+    backgroundColor: Colors.bgGrey
   }
 })
